@@ -8,6 +8,9 @@ public class Knight : MonoBehaviour
     Animator animator;
     SpriteRenderer sr;
     public bool canRun = true;
+    public bool canAttack = true;
+    public float gravity = 0.075f;
+    public float jump = 0.1f;
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -17,6 +20,9 @@ public class Knight : MonoBehaviour
   
     void Update()
     {
+        
+        Vector3 pos = transform.position;
+        
         float direction = Input.GetAxis("Horizontal");
         sr.flipX = direction < 0;
 
@@ -30,11 +36,34 @@ public class Knight : MonoBehaviour
 
         if(canRun == true)
         {
-            transform.position += transform.right * direction * speed * Time.deltaTime;
+            pos += transform.right * direction * speed * Time.deltaTime;
         }       
+
+        if (Input.GetKeyDown("space"))
+        {
+            animator.SetTrigger("jump");
+            canAttack = false;
+            pos.y += jump;
+            
+        }
+        
+        if (pos.y > 0)
+        {
+            pos.y -= gravity;
+        }
+        else
+        {
+            pos.y = 0;
+        }
+        transform.position = pos;
     }
     public void AttackHasFinished()
     {
         canRun = true;
+    }
+
+    public void JumpHasFinished()
+    {
+        canAttack = true;
     }
 }
