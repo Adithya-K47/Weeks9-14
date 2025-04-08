@@ -2,11 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class PuffyManager : MonoBehaviour
 {
     // prefab for spawning puffys
     public GameObject puffyPrefab;
+
+    //setting up slider for puffy size
+    public Slider sizeSlider;
+    public Vector2 minMaxSize = new Vector2(0.5f, 2f); 
 
     // event that triggers when a puffy spawns
     public UnityEvent onPuffySpawn;
@@ -27,6 +32,11 @@ public class PuffyManager : MonoBehaviour
     {
         // add the pop sound to play when puffy spawns
         onPuffySpawn.AddListener(PlayPopSound);
+
+        //slider setup
+        sizeSlider.minValue = minMaxSize.x;
+        sizeSlider.maxValue = minMaxSize.y;
+        sizeSlider.value = 0.5f;
     }
 
     public void SpawnPuffy()
@@ -34,8 +44,13 @@ public class PuffyManager : MonoBehaviour
         // pick random position within boundaries
         Vector3 spawnPosition = new Vector3(Random.Range(minX, maxX), minY, 0);
 
+
+
         // create new puffy at random position
         GameObject puffy = Instantiate(puffyPrefab, spawnPosition, transform.rotation);
+
+        float size = sizeSlider.value;
+        puffy.transform.localScale = new Vector3(size, size, size);
 
         // get the puffy script to make it float
         Puffy puffyScript = puffy.GetComponent<Puffy>();
